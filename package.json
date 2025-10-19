@@ -1,0 +1,20 @@
+{
+  "name": "express-default-template",
+  "version": "1.0.0",
+  "description": "This will be a default template for all Express projects.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-ejs-layouts": "^2.5.1",
+    "pg": "^8.16.3"
+  }
+}

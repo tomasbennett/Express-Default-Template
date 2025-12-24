@@ -1,12 +1,7 @@
-import { Files } from "@prisma/client";
-import { ICustomErrorResponse } from "../../../shared/models/ICustomErrorResponse";
 import { prisma } from "../db/prisma";
 import { supabase } from "../supabase/client";
+import { ICustomErrorResponse } from "../../../shared/features/api/models/APIErrorResponse";
 
-// import dotenv from "dotenv";
-// dotenv.config({
-//     path: "../../.env"
-// });
 
 export async function deleteSupaBaseFile(
     fileId: string | null

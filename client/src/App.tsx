@@ -1,17 +1,10 @@
 
 import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { GeneralHomeLayout } from './layouts/GeneralHomeLayout'
-import { SignInLayout } from './layouts/SignInLayout'
-import { LogIn } from './components/LoginComponent'
-import { Register } from './components/Register'
-import { NotAuthenticatedRoute, ProtectedRoute } from './services/ProtectedRoute'
-import { FolderPage } from './features/folders/layouts/FolderPage'
+import { SignInLayout } from './features/auth/layouts/SignInLayout'
+import { NotAuthenticatedRoute, ProtectedRoute } from './features/auth/services/ProtectedRoute'
 import { ErrorElement } from './features/error/services/ErrorElement'
 import { ErrorPageLayout } from './features/error/layouts/ErrorLayout'
-import { PublicFolderPage } from './features/folders/layouts/PublicFolderPage'
-import { PrivateFolderPage } from './features/folders/layouts/PrivateFolderPage'
-import { ParentFolderPage } from './features/folders/layouts/ParentFolderPage'
-import { NoSharedFolderSearched } from './features/folders/components/NoSharedFolderSearched'
 
 
 const router = createBrowserRouter([
@@ -21,8 +14,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorElement />,
     children: [
       {
-        index: true,
-        element: <Navigate to="folder" replace />,
+        index: true
       },
       {
         path: "error",
@@ -41,14 +33,12 @@ const router = createBrowserRouter([
               },
               {
                 path: "login",
-                element: <LogIn />,
                 handle: {
                   title: "Login",
                 }
               },
               {
                 path: "register",
-                element: <Register />,
                 handle: {
                   title: "Register",
                 }
@@ -58,36 +48,8 @@ const router = createBrowserRouter([
         ]
       },
       {
-        // path: "auth",
         element: <ProtectedRoute />,
         children: [
-          {
-            path: "folder",
-            element: <ParentFolderPage />,
-            children: [
-              {
-                index: true,
-                element: <Navigate to="root" replace />
-              },
-              {
-                path: ":folderId",
-                element: <PrivateFolderPage />,
-              },
-              {
-                path: "public",
-                children: [
-                  {
-                    index: true,
-                    element: <NoSharedFolderSearched />,
-                  },
-                  {
-                    path: ":sharedId",
-                    element: <PublicFolderPage />,
-                  }
-                ]
-              }
-            ]
-          }
 
         ]
       }

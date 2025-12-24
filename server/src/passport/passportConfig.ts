@@ -1,9 +1,9 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { ISignInError, usernamePasswordSchema } from "../../../shared/constants";
 import { prisma } from "../db/prisma";
 import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { usernamePasswordSchema, ISignInError } from "../../../shared/features/auth/models/ILoginSchema";
 
 
 passport.deserializeUser(async (id: string, done) => {

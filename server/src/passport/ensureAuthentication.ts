@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { ISignInError } from "../../../shared/constants";
-import { ICustomErrorResponse } from "../../../shared/models/ICustomErrorResponse";
+import { ICustomErrorResponse } from "../../../shared/features/api/models/APIErrorResponse";
+import { ISignInError } from "../../../shared/features/auth/models/ILoginSchema";
+
 
 export function ensureAuthentication(req: Request, res: Response<ICustomErrorResponse>, next: NextFunction) {
     if (req.isAuthenticated && req.isAuthenticated()) {

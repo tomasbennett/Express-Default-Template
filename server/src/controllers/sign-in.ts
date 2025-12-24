@@ -2,14 +2,14 @@ import { Prisma, User } from "@prisma/client";
 import { NextFunction, Router } from "express";
 import { Request, Response } from "express";
 import passport from "passport";
-import { ISignInError, usernamePasswordSchema } from "../../../shared/constants";
 import { prisma } from "../db/prisma";
 
 import bcrypt from "bcrypt";
-// import "dotenv/config";
+
 import { ensureAuthentication, ensureNotAuthenticated } from "../passport/ensureAuthentication";
-import { ICustomErrorResponse } from "../../../shared/models/ICustomErrorResponse";
-import { ICustomSuccessMessage } from "../../../shared/models/ISuccessResponse";
+import { ICustomSuccessMessage } from "../../../shared/features/api/models/APISuccessResponse";
+import { ISignInError, usernamePasswordSchema } from "../../../shared/features/auth/models/ILoginSchema";
+
 
 
 export const router = Router();

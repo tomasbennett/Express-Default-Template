@@ -9,17 +9,12 @@ import session from "express-session";
 import passport from "passport";
 
 
-import { router as signInRouter } from "./controllers/sign-in";
-import { router as authRouter } from "./controllers/auth";
 import { router as apiRouter } from "./controllers/api";
-import { router as publicFoldersRouter } from "./controllers/public";
-import { router as downloadRouter } from "./controllers/downloads";
-import { router as uploadRouter } from "./controllers/upload";
+
 
 
 import "./passport/passportConfig";
 import { environment } from "../../shared/constants";
-import { ICustomErrorResponse } from "../../shared/models/ICustomErrorResponse";
 
 
 const SERVER = path.resolve(process.cwd(), "server");
@@ -71,17 +66,8 @@ app.use(passport.session());
 
 
 
+app.use("/api", apiRouter);
 
-
-
-
-
-
-
-app.use("/sign-in", signInRouter);
-app.use("/auth", authRouter);
-app.use("/api", apiRouter, publicFoldersRouter, uploadRouter);
-app.use("/download", downloadRouter);
 
 app.get(/.*/, (req: Request, res: Response, next: NextFunction) => {
 
@@ -92,13 +78,8 @@ app.get(/.*/, (req: Request, res: Response, next: NextFunction) => {
 
 
 
-app.use((err: Error, req: Request, res: Response<ICustomErrorResponse>, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({
-    message: err.message || "Internal Server Error",
-    status: 500,
-    ok: false,
-  });
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  return;
 });
 
 

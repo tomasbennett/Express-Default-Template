@@ -1,24 +1,17 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ensureAuthentication } from "../passport/ensureAuthentication";
 import upload from "../supabase/multer";
-import { APIErrorSchema, ICustomErrorResponse } from "../../../shared/models/ICustomErrorResponse";
 import { supabase } from "../supabase/client";
 import { prisma } from "../db/prisma";
-import { INewFileResponse } from "../../../shared/models/INewFileResponse";
 
-// import dotenv from "dotenv";
-import { IsUsersFolder } from "../services/IsUsersFolder";
-// import { is } from "zod/v4/locales";
-// dotenv.config({
-//     path: "../../.env"
-// });
+
 
 
 export const router = Router();
 
 
 
-router.post("/files/upload", ensureAuthentication, upload.single("file"), async (req: Request<{}, {}, { currentFolderId: string | undefined }>, res: Response<ICustomErrorResponse | INewFileResponse>, next: NextFunction) => {
+router.post("/files/upload", ensureAuthentication, upload.single("file"), async (req: Request<{}, {}, { currentFolderId: string | undefined }>, res: Response, next: NextFunction) => {
     try {
         const file = req.file;
 
@@ -41,22 +34,6 @@ router.post("/files/upload", ensureAuthentication, upload.single("file"), async 
                 status: 400,
                 message: "No folder ID provided!!!"
             });
-        }
-
-        const isUsersFolder = await IsUsersFolder(currentFolderId, req.user);
-
-        if (isUsersFolder instanceof Error) {
-            return res.status(500).json({
-                ok: false,
-                status: 500,
-                message: isUsersFolder.message
-            });
-        }
-
-
-        const errorIsUsersFolder = APIErrorSchema.safeParse(isUsersFolder);
-        if (errorIsUsersFolder.success) {
-            return res.status(errorIsUsersFolder.data.status).json(errorIsUsersFolder.data);
         }
 
 
@@ -94,27 +71,7 @@ router.post("/files/upload", ensureAuthentication, upload.single("file"), async 
 
 
 
-        
-        const sharedFolderCheck = await prisma.sharedNode.findMany({
-            where: {
-                folderId: currentFolderId
-            },
 
-        });
-
-        if (sharedFolderCheck.length > 0) {
-            for (const sharedNode of sharedFolderCheck) {
-                await prisma.sharedNode.create({
-                    data: {
-                        sharedRelationshipId: sharedNode.sharedRelationshipId,
-                        fileId: newFilePrisma.id,
-                        parentNodeId: sharedNode.id,
-                    }
-                });
-            }
-
-
-        }
 
 
 

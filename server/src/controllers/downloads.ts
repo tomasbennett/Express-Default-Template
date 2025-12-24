@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ensureAuthentication } from "../passport/ensureAuthentication";
 import { prisma } from "../db/prisma";
-import { APIErrorSchema, ICustomErrorResponse } from "../../../shared/models/ICustomErrorResponse";
+
 import { fetchSupaBaseFile } from "../services/FetchSupaBaseFile";
-import { IsUsersFolder } from "../services/IsUsersFolder";
+import { APIErrorSchema, ICustomErrorResponse } from "../../../shared/features/api/models/APIErrorResponse";
 
 export const router = Router();
 
@@ -75,32 +75,9 @@ router.get("/private/:fileId", ensureAuthentication, async (req: Request<{ fileI
         }
     });
 
-    // if (!file) {
-    //     return res.status(404).json({
-    //         message: "File not found!!!",
-    //         ok: false,
-    //         status: 404
-    //     });
-    // }
+
+
     if (!file) return res.status(404).send("File not found!");
-
-    const isUsersFile = await IsUsersFolder(file.parentFolderId, req.user!);
-
-    if (isUsersFile instanceof Error) {
-        // return res.status(500).json({
-        //     message: isUsersFile.message,
-        //     ok: false,
-        //     status: 500
-        // });
-        return res.status(500).send(isUsersFile.message);
-    }
-
-    const errorResult = APIErrorSchema.safeParse(isUsersFile);
-    if (errorResult.success) {
-        const apiError = isUsersFile as ICustomErrorResponse;
-        // return res.status(apiError.status).json(apiError);
-        return res.status(apiError.status).send(apiError.message);
-    }
 
 
     const supabaseFile = await fetchSupaBaseFile(file.supabaseFileId);
@@ -121,4 +98,55 @@ router.get("/private/:fileId", ensureAuthentication, async (req: Request<{ fileI
 
     res.send(buffer);
 
+});
+
+
+
+router.get("/inline-file/:shareNodeId", ensureAuthentication, async (req: Request<{ shareNodeId: string }>, res: Response, next: NextFunction) => {
+    try {
+        const { shareNodeId } = req.params;
+    
+        const sharedNode = await prisma.sharedNode.findUnique({
+            where: {
+                id: shareNodeId,
+                fileId: {
+                    not: null
+                }
+            },
+            include: {
+                file: true,
+            }
+        });
+    
+
+        if (!sharedNode) {
+            return res.status(404).send("Shared node not found!!!");
+        }
+    
+
+        const file = sharedNode.file;
+    
+        const supabaseFile = await fetchSupaBaseFile(file!.supabaseFileId);
+    
+
+        const errorResultFile = APIErrorSchema.safeParse(supabaseFile);
+        if (errorResultFile.success) {
+            return res.status(404).send("File not found in storage: " + errorResultFile.data.message);
+        }
+        
+    
+        const arrayBuffer = await (supabaseFile as Blob).arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+    
+    
+        const fileBuffer = buffer;
+        res.setHeader("Content-Type", (supabaseFile as Blob).type);
+        res.setHeader("Content-Length", buffer.length.toString());
+        res.setHeader("Content-Disposition", `inline; filename="${file!.filename}"`);
+        res.send(fileBuffer);
+        
+    } catch (error) {
+        next(error);
+        
+    }
 });

@@ -1,10 +1,7 @@
-import { ICustomErrorResponse } from "../../../shared/models/ICustomErrorResponse";
+import { ICustomErrorResponse } from "../../../shared/features/api/models/APIErrorResponse";
 import { supabase } from "../supabase/client";
 
-// import dotenv from "dotenv";
-// dotenv.config({
-//     path: "../../.env"
-// });
+
 
 export async function fetchSupaBaseFile(supabaseFileId: string): Promise<Blob | ICustomErrorResponse> {
     const { data, error } = await supabase

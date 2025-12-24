@@ -1,5 +1,6 @@
 import { Navigate, isRouteErrorResponse, useRouteError } from "react-router-dom";
-import { ICustomErrorResponse } from "../../../../../shared/models/ICustomErrorResponse";
+import { ICustomErrorResponse } from "../../../../../shared/features/api/models/APIErrorResponse";
+
 
 export function ErrorElement() {
     const error = useRouteError();

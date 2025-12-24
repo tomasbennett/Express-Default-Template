@@ -1,8 +1,8 @@
 import styles from "./ErrorLayout.module.css";
 
 import { Navigate, useLocation} from "react-router-dom";
-import { APIErrorSchema } from "../../../../../shared/models/ICustomErrorResponse";
 import { useEffect } from "react";
+import { APIErrorSchema } from "../../../../../shared/features/api/models/APIErrorResponse";
 
 export function ErrorPageLayout() {
     const location = useLocation();
